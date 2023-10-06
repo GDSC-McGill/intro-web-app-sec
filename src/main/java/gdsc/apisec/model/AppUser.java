@@ -1,14 +1,12 @@
 package gdsc.apisec.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -25,5 +23,8 @@ public class AppUser {
     private String email;
 
     private String password;
+
+    @ElementCollection
+    private Set<Role> roles;
 
 }
