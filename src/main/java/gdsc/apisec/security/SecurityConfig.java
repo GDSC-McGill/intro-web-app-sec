@@ -1,4 +1,4 @@
-package gdsc.apisec.config;
+package gdsc.apisec.security;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -28,26 +28,26 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 public class SecurityConfig {
 
-    public record KeySet (RSAPublicKey publicKey, RSAPrivateKey privateKey) { }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .sessionManagement(ss -> ss.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/login"))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
-                .oauth2ResourceServer(c -> c.jwt(jwt -> jwt.jwtAuthenticationConverter(null)))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .build();
 
     }
 
     @Bean
-    KeySet keySet() {
+    KeyPair keySet() {
         // in practice generate outside of application and get from environment
         try {
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
-            KeyPair keyPair = generator.generateKeyPair();
-            return new KeySet((RSAPublicKey) keyPair.getPublic(), (RSAPrivateKey) keyPair.getPrivate());
+            return generator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException();
         }
@@ -59,14 +59,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtEncoder jwtEncoder(KeySet keySet) {
-        JWK jwk = new RSAKey.Builder(keySet.publicKey).privateKey(keySet.privateKey).build();
+    JwtEncoder jwtEncoder(KeyPair keyPair) {
+        JWK jwk = new RSAKey.Builder( (RSAPublicKey) keySet().getPublic()).
+                privateKey( (RSAPrivateKey) keyPair.getPrivate())
+                .build();
         JWKSource<SecurityContext> source = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(source);
     }
 
     @Bean
-    JwtDecoder jwtDecoder(KeySet keySet) {
-        return NimbusJwtDecoder.withPublicKey(keySet.publicKey).build();
+    JwtDecoder jwtDecoder(KeyPair keyPair) {
+        return NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build();
     }
 }

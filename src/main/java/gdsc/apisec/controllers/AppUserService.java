@@ -1,4 +1,4 @@
-package gdsc.apisec.service;
+package gdsc.apisec.controllers;
 
 import gdsc.apisec.model.SecurityUser;
 import gdsc.apisec.repositories.AppUserRepository;

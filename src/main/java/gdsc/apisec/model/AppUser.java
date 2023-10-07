@@ -1,5 +1,7 @@
 package gdsc.apisec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +24,9 @@ public class AppUser {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
-    @ElementCollection
     private Set<Role> roles;
 
 }

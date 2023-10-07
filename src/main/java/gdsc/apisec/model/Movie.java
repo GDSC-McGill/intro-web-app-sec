@@ -24,6 +24,6 @@ public class Movie {
 
     private String title;
 
-    private double length;
+    private int length;
 
 }
