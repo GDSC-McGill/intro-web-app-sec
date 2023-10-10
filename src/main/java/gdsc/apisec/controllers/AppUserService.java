@@ -1,6 +1,5 @@
 package gdsc.apisec.controllers;
 
-import gdsc.apisec.model.SecurityUser;
 import gdsc.apisec.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +14,6 @@ public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new SecurityUser(appUserRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("not found")));
+        return appUserRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("not found"));
     }
 }

@@ -1,7 +1,7 @@
 package gdsc.apisec.controllers;
 
 
-import gdsc.apisec.model.SecurityUser;
+import gdsc.apisec.model.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,14 +24,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login() {
-        SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<String> auth = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(7, ChronoUnit.DAYS))
-                .subject(user.getUser().getId().toString())
+                .subject(user.getId().toString())
                 .claim("scope", auth)
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
