@@ -5,5 +5,5 @@
 npm run dev
 ```
 
-#### Open the `malicious.html` to see the exploit.
+#### Open [`malicious.html`](https://github.com/GDSC-McGill/intro-web-app-sec/blob/csrf-exploit-demo/malicious.html) to see the exploit.
 
