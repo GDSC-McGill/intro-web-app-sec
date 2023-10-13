@@ -36,8 +36,6 @@ To get started with this project, you should have a basic understanding of Sprin
 
 - **CSRF Protection**: Understand Cross-Site Request Forgery (CSRF) and how Spring Security helps mitigate this threat.
 
-- **Session Management**: Explore various session management strategies and choose the one that best suits your application.
-
 - **Access Control**: Define and manage access control rules for your application's resources.
 
 ## Usage
